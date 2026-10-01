@@ -1,21 +1,85 @@
 package com.example.wifilocalization
+
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import kotlin.math.*
-data class DrawAnchor(val name:String,val x:Double,val y:Double,val distance:Double?)
-class LocalizationView(c:Context,a:AttributeSet?):View(c,a){
- private val p=Paint(Paint.ANTI_ALIAS_FLAG); var anchors:List<DrawAnchor> = emptyList(); var position:Pair<Double,Double>?=null
- override fun onDraw(cv:Canvas){ super.onDraw(cv); cv.drawColor(Color.WHITE); if(anchors.isEmpty())return
-  val m=55f; var mx=max(10.0,anchors.maxOf{it.x}+2); var my=max(8.0,anchors.maxOf{it.y}+2)
-  position?.let{mx=max(mx,it.first+2);my=max(my,it.second+2)}
-  val s=min((width-2*m)/mx.toFloat(),(height-2*m)/my.toFloat()); fun X(x:Double)=m+x.toFloat()*s; fun Y(y:Double)=height-m-y.toFloat()*s
-  p.color=0xffe0e0e0.toInt();p.strokeWidth=1f
-  for(i in 0..mx.toInt())cv.drawLine(X(i.toDouble()),m,X(i.toDouble()),height-m,p)
-  for(i in 0..my.toInt())cv.drawLine(m,Y(i.toDouble()),width-m,Y(i.toDouble()),p)
-  anchors.forEach{q-> q.distance?.let{d->p.style=Paint.Style.STROKE;p.color=0xff78909c.toInt();p.strokeWidth=3f;cv.drawCircle(X(q.x),Y(q.y),d.toFloat()*s,p)}
-   p.style=Paint.Style.FILL;p.color=0xff263238.toInt();cv.drawCircle(X(q.x),Y(q.y),10f,p);p.textSize=28f;cv.drawText("${q.name} (${q.x},${q.y})",X(q.x)+13,Y(q.y)-12,p)}
-  position?.let{p.color=0xffd32f2f.toInt();cv.drawCircle(X(it.first),Y(it.second),13f,p);p.textSize=30f;cv.drawText("Phone",X(it.first)+15,Y(it.second),p)}
- }
+import kotlin.math.max
+import kotlin.math.min
+
+data class DrawAnchor(
+    val name: String,
+    val x: Double,
+    val y: Double,
+    val distance: Double?
+)
+
+class LocalizationView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    var anchors: List<DrawAnchor> = emptyList()
+    var position: Pair<Double, Double>? = null
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        canvas.drawColor(Color.WHITE)
+        if (anchors.isEmpty()) return
+
+        val margin = 55f
+        var maxX = max(10.0, anchors.maxOf { it.x } + 2.0)
+        var maxY = max(8.0, anchors.maxOf { it.y } + 2.0)
+
+        position?.let {
+            maxX = max(maxX, it.first + 2.0)
+            maxY = max(maxY, it.second + 2.0)
+        }
+
+        val scale = min(
+            (width - 2 * margin) / maxX.toFloat(),
+            (height - 2 * margin) / maxY.toFloat()
+        )
+
+        fun screenX(x: Double) = margin + x.toFloat() * scale
+        fun screenY(y: Double) = height - margin - y.toFloat() * scale
+
+        paint.color = 0xffe0e0e0.toInt()
+        paint.strokeWidth = 1f
+        paint.style = Paint.Style.STROKE
+
+        for (i in 0..maxX.toInt()) {
+            canvas.drawLine(screenX(i.toDouble()), margin, screenX(i.toDouble()), height - margin, paint)
+        }
+        for (i in 0..maxY.toInt()) {
+            canvas.drawLine(margin, screenY(i.toDouble()), width - margin, screenY(i.toDouble()), paint)
+        }
+
+        anchors.forEach { anchor ->
+            anchor.distance?.let { distance ->
+                paint.style = Paint.Style.STROKE
+                paint.color = 0xff78909c.toInt()
+                paint.strokeWidth = 3f
+                canvas.drawCircle(screenX(anchor.x), screenY(anchor.y), distance.toFloat() * scale, paint)
+            }
+
+            paint.style = Paint.Style.FILL
+            paint.color = 0xff263238.toInt()
+            canvas.drawCircle(screenX(anchor.x), screenY(anchor.y), 10f, paint)
+            paint.textSize = 28f
+            canvas.drawText(
+                "${anchor.name} (${anchor.x}, ${anchor.y})",
+                screenX(anchor.x) + 13f,
+                screenY(anchor.y) - 12f,
+                paint
+            )
+        }
+
+        position?.let {
+            paint.style = Paint.Style.FILL
+            paint.color = 0xffd32f2f.toInt()
+            canvas.drawCircle(screenX(it.first), screenY(it.second), 13f, paint)
+            paint.textSize = 30f
+            canvas.drawText("Phone", screenX(it.first) + 15f, screenY(it.second), paint)
+        }
+    }
 }
