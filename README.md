@@ -13,10 +13,10 @@ Android teaching app using three Wi-Fi access points for RSSI-based localization
 ## Anchor coordinates
 Coordinates are physical positions in **metres** relative to an origin chosen for the room.
 
-Example:
+Example (Configured for Robotics Lab):
 - AP1 = (0, 0)
-- AP2 = (10, 0)
-- AP3 = (0, 8)
+- AP2 = (3, 0)
+- AP3 = (0, 3)
 
 Edit the anchors in `MainActivity.kt`.
 
