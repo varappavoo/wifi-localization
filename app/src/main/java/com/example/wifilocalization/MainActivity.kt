@@ -16,9 +16,9 @@ data class Measurement(val a:Anchor,val rssi:Int,val d:Double)
 class MainActivity:AppCompatActivity(){
  // EDIT THESE. Coordinates are physical positions in METRES.
  private val anchors=listOf(
-  Anchor("AP1","AA:BB:CC:DD:EE:01",0.0,0.0),
-  Anchor("AP2","AA:BB:CC:DD:EE:02",10.0,0.0),
-  Anchor("AP3","AA:BB:CC:DD:EE:03",0.0,8.0))
+  Anchor("AP1","D2:C4:DF:9C:6A:D9",0.0,0.0),
+  Anchor("AP2","BA:4D:BF:8B:DF:2D",3.0,0.0),
+  Anchor("AP3","E6:F7:87:54:59:76",0.0,3.0))
  private val rssiAt1m=-40.0
  private val pathLossN=2.5
  private lateinit var wifi:WifiManager
