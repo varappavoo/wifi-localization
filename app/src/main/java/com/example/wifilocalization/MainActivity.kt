@@ -65,7 +65,7 @@ class MainActivity:AppCompatActivity(){
   val scans=wifi.scanResults
   val ms=anchors.mapNotNull{a->scans.firstOrNull{it.BSSID.equals(a.bssid,true)}?.let{Measurement(a,it.level,distance(it.level))}}
   results.text=anchors.joinToString("\n"){a->
-   ms.firstOrNull{it.a.name==a.name}?.let{"${a.name}: ${it.rssi} dBm   %.2f m".format(it.d)}?:"${a.name}: not visible"
+   ms.firstOrNull{it.a.name==a.name}?.let{"${a.name}  ${a.bssid}   ${it.rssi} dBm   %.2f m".format(it.d)}?:"${a.name}  ${a.bssid}   not visible"
   }
   val pos=if(ms.size==3)trilaterate(ms[0],ms[1],ms[2]) else null
   map.anchors=anchors.map{a->DrawAnchor(a.name,a.x,a.y,ms.firstOrNull{it.a.name==a.name}?.d)}
